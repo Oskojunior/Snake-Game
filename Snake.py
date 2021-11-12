@@ -14,16 +14,14 @@ gridsize = 20
 grid_width = screen_width/gridsize
 grid_height = screen_height/gridsize
 
+
 class Snake:
     def __init__(self):
         self.length = 1
         self.positions = [((screen_width/2), (screen_height/2))]
         self.direction = random.choice([up, down, left, right])
         self.color = (17, 24, 47)
-        # Special thanks to YouTubers Mini - Cafetos and Knivens Beast for raising this issue!
-        # Code adjustment courtesy of YouTuber Elija de Hoog
         self.score = 0
-
     def get_head_position(self):
         return self.positions[0]
 
@@ -33,16 +31,17 @@ class Snake:
         else:
             self.direction = point
 
-    def move(self):
+    def move(self, wall_positions):
         cur = self.get_head_position()
-        x,y = self.direction
-        new = (((cur[0]+(x*gridsize))%screen_width), (cur[1]+(y*gridsize))%screen_height)
-        if len(self.positions) > 2 and new in self.positions[2:]:
-            self.reset()
+        x, y = self.direction
+        new = (((cur[0]+(x*gridsize)) % screen_width), (cur[1]+(y*gridsize)) % screen_height)
+        if len(self.positions) > 2 and new in self.positions[2:] or new in wall_positions:
+            return True
         else:
-            self.positions.insert(0,new)
+            self.positions.insert(0, new)
             if len(self.positions) > self.length:
                 self.positions.pop()
+            return False
 
     def reset(self):
         self.length = 1
@@ -64,3 +63,14 @@ class Snake:
                     self.turn(left)
                 elif event.key == pygame.K_RIGHT:
                     self.turn(right)
+
+    def saved(self):
+         self.saved = [self.positions, self.direction, self.length, self.score]
+         return self.saved
+
+
+    def restore(self, saved):
+        self.positions = saved[0]
+        self.direction = saved[1]
+        self.length = saved[2]
+        self.score = saved[3]
