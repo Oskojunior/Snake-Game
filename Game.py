@@ -6,6 +6,7 @@ from Interface import Interface
 from Wall import Wall
 from Main_Menu import MainMenu
 from Difficulty import Difficulty
+from Options import Options
 screen_width = 480
 screen_height = 480
 
@@ -139,7 +140,7 @@ class Game:
                             self.difficulty = diff.state
                             self.game(False)
                     if event.key == pygame.K_ESCAPE:
-                        pygame.quit()
+                        self.menu()
             self.interface.background()
             self.interface.update()
             self.interface.difficulty(diff.state)
@@ -167,4 +168,30 @@ class Game:
 
 
     def options(self):
-        pass
+        options = Options()
+        while True:
+            self.clock.tick(10)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        options.change_state(1)
+                    if event.key == pygame.K_DOWN:
+                        options.change_state(-1)
+                    if event.key == pygame.K_RETURN:
+                        if options.state == 0:
+                            self.interface.change_food()
+                        if options.state == -1:
+                            self.interface.change_walls()
+                        if options.state == 1:
+                            self.interface.change_snake()
+                        if options.state == -2:
+                            self.interface.change_background()
+                    if event.key == pygame.K_ESCAPE:
+                        self.menu()
+            self.interface.background()
+            self.interface.update()
+            self.interface.options(options.state)
+            pygame.display.update()
