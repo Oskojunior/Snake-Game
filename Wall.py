@@ -13,14 +13,14 @@ class Wall:
 
     def box(self):
         for wall in range(int(grid_width)):
-            self.positions.append(((wall) * gridsize, (grid_height - 1) * gridsize))
-            self.positions.append(((wall) * gridsize, (0) * gridsize))
+            self.positions.append((wall * gridsize, (grid_height - 1) * gridsize))
+            self.positions.append((wall * gridsize, (0) * gridsize))
         for wall in range(int(grid_height)):
-            self.positions.append(((grid_width - 1) * gridsize, (wall) * gridsize))
-            self.positions.append(((0) * gridsize, (wall) * gridsize))
+            self.positions.append(((grid_width - 1) * gridsize, wall * gridsize))
+            self.positions.append(((0) * gridsize, wall * gridsize))
 
     def chaos(self):
-        for i in range(1, 10):
+        for i in range(1, 20):
             self.positions.append((random.randint(0, grid_width-1) * gridsize, (random.randint(0, grid_height-1)  * gridsize)))
         pass
 

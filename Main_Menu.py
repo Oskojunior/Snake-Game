@@ -8,6 +8,6 @@ class MainMenu:
 
 
     def change_state(self, change):
-        if  (not (self.state == -1 and change == -1)) and (not(self.state == 0 and change == 1)):
+        if  (not (self.state == -2 and change == -1)) and (not(self.state == 0 and change == 1)):
             self.state += change
 

@@ -50,6 +50,8 @@ class Game:
                             self.choose_difficulty()
                         if self.main_menu.state == -1:
                             self.options()
+                        if self.main_menu.state == -2:
+                            self.leaderboard()
                     if event.key == pygame.K_ESCAPE:
                         pygame.quit()
             self.interface.background()
@@ -94,7 +96,7 @@ class Game:
                         self.pause()
             self.interface.background()
             if self.snake.move(wall.positions):
-                self.game_over()
+                self.game_over(self.snake.score)
             if self.snake.get_head_position() == food.position:
                 self.snake.length += 1
                 self.snake.score += 1
@@ -147,7 +149,12 @@ class Game:
             pygame.display.update()
 
 
-    def game_over(self):
+    def game_over(self, score):
+        f = open("score.txt", "r+")
+        if int(f.read()) < score:
+            f.seek(0)
+            f.write(str(score))
+        f.close()
         Counter = 3
         while True:
             self.clock.tick(1)
@@ -194,4 +201,20 @@ class Game:
             self.interface.background()
             self.interface.update()
             self.interface.options(options.state)
+            pygame.display.update()
+
+
+    def leaderboard(self):
+        while True:
+            self.clock.tick(10)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.menu()
+            self.interface.background()
+            self.interface.update()
+            self.interface.leaderboard()
             pygame.display.update()
