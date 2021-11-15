@@ -38,6 +38,7 @@ class Interface:
         self.walls_color = 5
         self.food_color = 5
         self.surface.fill(self.backgroundcolors[self.background_color])
+        pygame.display.set_caption("Snake")
         self.myFont = pygame.font.Font(font_path, 32)
         self.myFont2 = pygame.font.Font(font_path, 16)
         self.myFont3 = pygame.font.Font(font_path, 24)
