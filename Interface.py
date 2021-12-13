@@ -31,13 +31,15 @@ class Interface:
             (screen_width, screen_height), 0, 32)
         self.surface = pygame.Surface(self.screen.get_size())
         self.surface = self.surface.convert()
-        self.background_color = 0
-        self.backgroundcolors = [BLACK, PURPLE]
-        self.itemcolors = [YELLOW, PINK, RED, GREEN, BLUE, WHITE]
-        self.snake_color = 5
-        self.walls_color = 5
-        self.food_color = 5
-        self.surface.fill(self.backgroundcolors[self.background_color])
+        self.background_img = 0
+        self.background_imgs = [pygame.image.load("background_wood.jpg"),pygame.image.load("background_road.jpg")]
+        self.food_imgs = [pygame.image.load("banana.png"), pygame.image.load("apple.png"),pygame.image.load("cherry_food.png")]
+        self.wall_ims = [pygame.image.load("wall_brick.jpg"),pygame.image.load("wall_brick2.jpg"), pygame.image.load("fence.png")]
+        self.snake_imgs = [pygame.image.load("snake_body.jpg"), pygame.image.load("snake_body2.jpg"), pygame.image.load("snake_body3.jpg")]
+        self.snake_img = 0
+        self.wall_img = 0
+        self.food_img = 0
+        self.surface.blit(self.background_imgs[self.background_img], (0, 0))
         pygame.display.set_caption("Snake")
         self.myFont = pygame.font.Font(font_path, 32)
         self.myFont2 = pygame.font.Font(font_path, 16)
@@ -47,18 +49,14 @@ class Interface:
         self.titleFont = pygame.font.Font(font_path3, 64)
 
     def background(self):
-        self.surface.fill(self.backgroundcolors[self.background_color])
+        self.surface.blit(self.background_imgs[self.background_img], (0, 0))
 
     def draw_snake(self, positions):
-        textSnake = self.font.render(
-            '*', True, self.itemcolors[self.snake_color])
         for p in positions:
-            self.surface.blit(textSnake, p)
+            self.surface.blit(self.snake_imgs[self.snake_img], p)
 
     def draw_food(self, position):
-        textFood = self.font.render(
-            '@', True, self.itemcolors[self.food_color])
-        self.surface.blit(textFood, position)
+        self.surface.blit(self.food_imgs[self.food_img], position)
 
     def update(self):
         self.screen.blit(self.surface, (0, 0))
@@ -68,25 +66,23 @@ class Interface:
         self.screen.blit(text, (20, 20))
 
     def draw_wall(self, positions):
-        textWallHeight = self.font.render(
-            '#', True, self.itemcolors[self.walls_color])
         if not positions == (-1, -1):
             for p in positions:
-                self.surface.blit(textWallHeight, p)
+                self.surface.blit(self.wall_ims[self.wall_img], p)
 
     def menu(self, state):
         title = self.titleFont.render("Snake", True, GREENER_GREEN)
         text_play = self.myFont.render("Play", True, GREEN)
         text_options = self.myFont.render("Options", True, PURPLE)
-        indicator = self.myFont2.render("->", True, WHITE)
+        indicator = pygame.image.load("indicator.png")
         border_bar = self.myFont.render(
             "------------------------------------------------------------", True, GREENER_GREEN)
         if state == 0:
             self.screen.blit(
-                indicator, ((screen_width / 2 - 60), (screen_height/2 - 25)))
+                indicator, ((screen_width / 2 - 100), (screen_height/2 - 25)))
         elif state == -1:
             self.screen.blit(
-                indicator, ((screen_width / 2 - 60), (screen_height / 2 + 4)))
+                indicator, ((screen_width / 2 - 100), (screen_height / 2 + 4)))
         self.screen.blit(
             text_play, (200, (screen_height/2 - 30)))
         self.screen.blit(
@@ -103,19 +99,19 @@ class Interface:
             text_pause2, (170, (screen_height/2 + 20)))
 
     def difficulty(self, state):
-        text_hard = self.myFont.render("Hard", True, GREY)
+        text_hard = self.myFont.render("Hard", True, GOLD)
         text_medium = self.myFont.render("Medium", True, RED)
         text_easy = self.myFont.render("Easy", True, GREEN)
-        indicator = self.myFont2.render("->", True, WHITE)
+        indicator = pygame.image.load("indicator.png")
         if state == 0:
             self.screen.blit(
-                indicator, ((screen_width / 2 - 60), (screen_height / 2 - 15)))
+                indicator, ((screen_width / 2 - 100), (screen_height / 2 - 15)))
         elif state == -1:
             self.screen.blit(
-                indicator, ((screen_width / 2 - 60), (screen_height / 2 + 15)))
+                indicator, ((screen_width / 2 - 100), (screen_height / 2 + 15)))
         elif state == 1:
             self.screen.blit(
-                indicator, ((screen_width / 2 - 60), (screen_height / 2 - 45)))
+                indicator, ((screen_width / 2 - 100), (screen_height / 2 - 45)))
         self.screen.blit(
             text_medium, (200, (screen_height/2 - 20)))
         self.screen.blit(
@@ -126,9 +122,9 @@ class Interface:
     def game_over(self, counter):
         text_died = self.myFont.render("You DIED", True, SUPER_RED)
         text_menu = self.myFont2.render(
-            "Press ESC to return to Main menu", True, PURPLE)
+            "Press ESC to return to Main menu", True, PINK)
         text = self.myFont2.render(
-            "You will respawn after {0} seconds".format(counter), True, GREY)
+            "You will respawn after {0} seconds".format(counter), True, WHITE)
         self.screen.blit(
             text, ((screen_width/2 - 150), (screen_height/2 + 20)))
         self.screen.blit(
@@ -138,33 +134,36 @@ class Interface:
 
     def options(self, state):
         description = self.myFont.render(
-            "Customize colors:", True, GREENER_GREEN)
+            "Customize images:", True, GREENER_GREEN)
         text_snake = self.justFont.render(
-            "Snake", True, self.itemcolors[self.snake_color])
+            "Snake", True, (255,255,255))
         text_food = self.justFont.render(
-            "Food", True, self.itemcolors[self.food_color])
+            "Food", True, (255,255,255))
         text_walls = self.justFont.render(
-            "Walls", True, self.itemcolors[self.walls_color])
+            "Walls", True, (255,255,255))
         text_background = self.justFont.render("Background", True, WHITE)
-        indicator = self.myFont2.render("->", True, WHITE)
+        indicator = pygame.image.load("indicator.png")
         if state == 0:
             self.screen.blit(
-                indicator, ((screen_width / 2 - 85), (screen_height / 2 - 20)))
+                indicator, ((screen_width / 2 - 120), (screen_height / 2 - 20)))
         elif state == -1:
             self.screen.blit(
-                indicator, ((screen_width / 2 - 85), (screen_height / 2)))
+                indicator, ((screen_width / 2 - 120), (screen_height / 2)))
         elif state == 1:
             self.screen.blit(
-                indicator, ((screen_width / 2 - 85), (screen_height / 2 - 40)))
+                indicator, ((screen_width / 2 - 120), (screen_height / 2 - 40)))
         elif state == -2:
             self.screen.blit(
-                indicator, ((screen_width / 2 - 85), (screen_height / 2 + 20)))
+                indicator, ((screen_width / 2 - 120), (screen_height / 2 + 20)))
         self.screen.blit(
             text_food, (170, (screen_height/2 - 20)))
+        self.screen.blit(self.food_imgs[self.food_img], (250, (screen_height/2 - 20)))
         self.screen.blit(
             text_walls, (170, (screen_height / 2)))
+        self.screen.blit(self.wall_ims[self.wall_img], (250, (screen_height / 2)))
         self.screen.blit(
             text_snake, (170, (screen_height / 2 - 40)))
+        self.screen.blit(self.snake_imgs[self.snake_img], (250, (screen_height / 2 - 40)))
         self.screen.blit(
             text_background, (170, (screen_height / 2 + 20)))
         self.screen.blit(
@@ -172,25 +171,25 @@ class Interface:
         )
 
     def change_snake(self):
-        if self.snake_color + 1 == len(self.itemcolors):
-            self.snake_color = 0
+        if self.snake_img + 1 == len(self.snake_imgs):
+            self.snake_img = 0
         else:
-            self.snake_color += 1
+            self.snake_img += 1
 
     def change_food(self):
-        if self.food_color + 1 == len(self.itemcolors):
-            self.food_color = 0
+        if self.food_img + 1 == len(self.food_imgs):
+            self.food_img = 0
         else:
-            self.food_color += 1
+            self.food_img += 1
 
     def change_walls(self):
-        if self.walls_color + 1 == len(self.itemcolors):
-            self.walls_color = 0
+        if self.wall_img + 1 == len(self.wall_ims):
+            self.wall_img = 0
         else:
-            self.walls_color += 1
+            self.wall_img += 1
 
     def change_background(self):
-        if self.background_color + 1 == len(self.backgroundcolors):
-            self.background_color = 0
+        if self.background_img + 1 == len(self.background_imgs):
+            self.background_img = 0
         else:
-            self.background_color += 1
+            self.background_img += 1
